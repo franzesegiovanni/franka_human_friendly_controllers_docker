@@ -25,8 +25,27 @@ LABEL maintainer="Ignacio Vizzo <ignaciovizzo@gmail.com>"
 # Add any additional dependencies here:
 RUN apt-get update && apt-get install --no-install-recommends -y \
     rsync \
+    build-essential \
+    cmake \
+    git \
+    libpoco-dev \
+    libeigen3-dev \
+    libfmt-dev \
+    ros-noetic-combined-robot-hw \
+    ros-noetic-boost-sml \
+    ros-noetic-pinocchio \
     && rm -rf /var/lib/apt/lists/*
 
-# $USER_NAME Inherited from .base/Dockerfile
-WORKDIR /home/$USER_NAME/ros_ws
+# Also bake libfranka into the image
+USER $USER
+WORKDIR /home/$USER
+RUN git clone --branch 0.9.2 --recursive https://github.com/frankaemika/libfranka/
+RUN mkdir -p /home/$USER/libfranka/build
+WORKDIR /home/$USER/libfranka/build
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/opt/openrobots/lib/cmake -DBUILD_TESTS=OFF ..
+RUN make -j$(nproc)
+ENV Franka_DIR=/home/$USER/libfranka/build
+
+# $USER Inherited from .base/Dockerfile
+WORKDIR /home/$USER/ros_ws
 CMD ["zsh"]

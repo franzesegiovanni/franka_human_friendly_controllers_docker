@@ -1,0 +1,9 @@
+[submodule "src/libfranka"]
+	path = src/libfranka
+	url = git@github.com:frankaemika/libfranka.git
+[submodule "src/franka_ros"]
+	path = src/franka_ros
+	url = git@github.com:lassepe/franka_ros.git
+[submodule "src/franka_human_friendly_controllers"]
+	path = src/franka_human_friendly_controllers
+	url = git@github.com:lassepe/franka_human_friendly_controllers.git
